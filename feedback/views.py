@@ -13,7 +13,8 @@ from .serializers import (
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.db.models import Q
 from datetime import datetime
-
+from .models import Employee
+from .serializers import EmployeeSerializer
 # Public: register
 class RegisterView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
@@ -94,3 +95,40 @@ class AdminFeedbackFilterAPIView(generics.ListAPIView):
                 pass
 
         return qs.order_by('-created_at')
+# feedback/views.py
+
+
+# class EmployeeListAPIView(generics.ListAPIView):
+#     """
+#     API to view all employees with optional filters.
+#     Accessible to authenticated users (you can restrict to admin if needed).
+#     """
+#     serializer_class = EmployeeSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     def get_queryset(self):
+#         queryset = Employee.objects.select_related('user', 'designation').all()
+
+#         # Optional filters
+#         designation = self.request.query_params.get('designation')
+#         department = self.request.query_params.get('department')
+#         user_id = self.request.query_params.get('user_id')
+
+#         if designation:
+#             # Filter by designation name or id
+#             if designation.isdigit():
+#                 queryset = queryset.filter(designation__id=int(designation))
+#             else:
+#                 queryset = queryset.filter(designation__name__icontains=designation)
+
+#         if department:
+#             queryset = queryset.filter(department__icontains=department)
+
+#         if user_id:
+#             queryset = queryset.filter(user__id=user_id)
+
+#         return queryset.order_by('user__first_name')
+class EmployeeListAPIView(generics.ListAPIView):
+    queryset = Employee.objects.all().select_related('user', 'designation')
+    serializer_class = EmployeeSerializer
+    permission_classes = [permissions.IsAuthenticated]  
