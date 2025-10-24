@@ -129,6 +129,6 @@ class AdminFeedbackFilterAPIView(generics.ListAPIView):
 
 #         return queryset.order_by('user__first_name')
 class EmployeeListAPIView(generics.ListAPIView):
-    queryset = Employee.objects.all().select_related('user', 'designation')
+    queryset = Employee.objects.all().select_related('username', 'designation')
     serializer_class = EmployeeSerializer
     permission_classes = [permissions.IsAuthenticated]  
